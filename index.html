@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KRP Salon | Luxury Beauty Experience</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600;700&display=swap');
+    body {
+      font-family: 'Montserrat', sans-serif;
+      overflow-x: hidden;
+    }
+    .font-serif {
+      font-family: 'Playfair Display', serif;
+    }
+    .hero-gradient {
+      background: linear-gradient(135deg, rgba(236,72,153,0.15) 0%, rgba(236,72,153,0) 50%);
+    }
+    .text-stroke {
+      -webkit-text-stroke: 1px #ec4899;
+      color: transparent;
+    }
+    .blob {
+      filter: blur(60px);
+      opacity: 0.3;
+    }
+    .service-card:hover .service-icon {
+      transform: translateY(-5px) scale(1.1);
+    }
+    .scroll-indicator {
+      animation: bounce 2s infinite;
+    }
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+      40% {transform: translateY(-15px);}
+      60% {transform: translateY(-7px);}
+    }
+    #hairCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      opacity: 0.15;
+    }
+    .parallax-bg {
+      background-attachment: fixed;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-800 antialiased">
+  <!-- Three.js Background -->
+  <div id="threejs-bg" class="fixed top-0 left-0 w-full h-full z-0 opacity-10"></div>
+
+  <!-- p5.js Hair Animation -->
+  <div id="hairCanvas" class="fixed top-0 left-0 w-full h-full z-0"></div>
+
+  <!-- Floating Blobs -->
+  <div class="fixed -left-40 -top-40 w-80 h-80 rounded-full bg-pink-400 blob mix-blend-multiply"></div>
+  <div class="fixed -right-40 bottom-0 w-96 h-96 rounded-full bg-purple-400 blob mix-blend-multiply"></div>
+
+  <!-- Header -->
+  <header class="fixed w-full z-50 bg-white/90 backdrop-blur-md shadow-sm">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="#" class="text-3xl font-serif font-bold text-pink-600 tracking-tight">KRP</a>
+      
+      <nav class="hidden md:flex space-x-10">
+        <a href="#home" class="text-gray-700 hover:text-pink-600 font-medium transition">Home</a>
+        <a href="#services" class="text-gray-700 hover:text-pink-600 font-medium transition">Services</a>
+        <a href="#about" class="text-gray-700 hover:text-pink-600 font-medium transition">About</a>
+        <a href="#gallery" class="text-gray-700 hover:text-pink-600 font-medium transition">Gallery</a>
+        <a href="#testimonials" class="text-gray-700 hover:text-pink-600 font-medium transition">Reviews</a>
+        <a href="#contact" class="text-gray-700 hover:text-pink-600 font-medium transition">Contact</a>
+      </nav>
+      
+      <div class="flex items-center space-x-4">
+        <a href="#booking" class="hidden md:block bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-full font-medium transition transform hover:scale-105">Book Now</a>
+        <button id="mobile-menu-button" class="md:hidden text-gray-700">
+          <i class="fas fa-bars text-2xl"></i>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white py-4 px-6 shadow-lg">
+      <div class="flex flex-col space-y-4">
+        <a href="#home" class="text-gray-700 hover:text-pink-600 font-medium">Home</a>
+        <a href="#services" class="text-gray-700 hover:text-pink-600 font-medium">Services</a>
+        <a href="#about" class="text-gray-700 hover:text-pink-600 font-medium">About</a>
+        <a href="#gallery" class="text-gray-700 hover:text-pink-600 font-medium">Gallery</a>
+        <a href="#testimonials" class="text-gray-700 hover:text-pink-600 font-medium">Reviews</a>
+        <a href="#contact" class="text-gray-700 hover:text-pink-600 font-medium">Contact</a>
+        <a href="#booking" class="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-full font-medium text-center">Book Now</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="home" class="min-h-screen flex items-center justify-center relative overflow-hidden pt-20">
+    <div class="container mx-auto px-6 py-20 flex flex-col md:flex-row items-center">
+      <div class="md:w-1/2 mb-12 md:mb-0">
+        <h1 class="text-5xl md:text-7xl font-serif font-bold leading-tight mb-6">
+          <span class="text-pink-600">Elevate</span> Your <span class="text-stroke">Beauty</span>
+        </h1>
+        <p class="text-xl text-gray-600 mb-8 max-w-lg">
+          At KRP Salon, we blend artistry with science to create personalized beauty experiences that enhance your natural radiance.
+        </p>
+        <div class="flex space-x-4">
+          <a href="#booking" class="bg-pink-600 hover:bg-pink-700 text-white px-8 py-3 rounded-full font-medium transition transform hover:scale-105 shadow-lg">
+            Book Appointment
+          </a>
+          <a href="#services" class="border-2 border-pink-600 text-pink-600 hover:bg-pink-50 px-8 py-3 rounded-full font-medium transition">
+            Our Services
+          </a>
+        </div>
+        <div class="mt-12 flex items-center space-x-6">
+          <div class="flex -space-x-3">
+            <div class="w-10 h-10 rounded-full bg-pink-200 border-2 border-white"></div>
+            <div class="w-10 h-10 rounded-full bg-purple-200 border-2 border-white"></div>
+            <div class="w-10 h-10 rounded-full bg-yellow-200 border-2 border-white"></div>
+          </div>
+          <div>
+            <div class="flex items-center">
+              <i class="fas fa-star text-yellow-400 mr-1"></i>
+              <i class="fas fa-star text-yellow-400 mr-1"></i>
+              <i class="fas fa-star text-yellow-400 mr-1"></i>
+              <i class="fas fa-star text-yellow-400 mr-1"></i>
+              <i class="fas fa-star text-yellow-400 mr-1"></i>
+            </div>
+            <p class="text-sm text-gray-600">500+ Happy Clients</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="md:w-1/2 relative">
+        <div class="relative">
+          <div class="w-full h-96 bg-gradient-to-br from-pink-100 to-purple-100 rounded-2xl shadow-xl flex items-center justify-center">
+            <div class="text-center p-8">
+              <i class="fas fa-cut text-6xl text-pink-600 mb-4"></i>
+              <h3 class="text-2xl font-bold text-gray-800">Your Beauty Journey Starts Here</h3>
+              <p class="text-gray-600 mt-2">Experience luxury haircare tailored just for you</p>
+            </div>
+          </div>
+          <div class="absolute -bottom-6 -left-6 w-24 h-24 bg-yellow-100 rounded-2xl shadow-lg"></div>
+          <div class="absolute -top-6 -right-6 w-32 h-32 bg-pink-100 rounded-2xl shadow-lg"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 scroll-indicator">
+      <i class="fas fa-chevron-down text-2xl text-pink-600 animate-bounce"></i>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="py-16 bg-gradient-to-r from-pink-50 to-purple-50">
+    <div class="container mx-auto px-6">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div class="p-6">
+          <div class="text-4xl font-bold text-pink-600 mb-2" id="clients-count">0</div>
+          <p class="text-gray-600">Happy Clients</p>
+        </div>
+        <div class="p-6">
+          <div class="text-4xl font-bold text-pink-600 mb-2" id="services-count">0</div>
+          <p class="text-gray-600">Services Offered</p>
+        </div>
+        <div class="p-6">
+          <div class="text-4xl font-bold text-pink-600 mb-2" id="stylists-count">0</div>
+          <p class="text-gray-600">Expert Stylists</p>
+        </div>
+        <div class="p-6">
+          <div class="text-4xl font-bold text-pink-600 mb-2" id="years-count">0</div>
+          <p class="text-gray-600">Years Experience</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section id="services" class="py-20 bg-white">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-serif font-bold mb-4">Our <span class="text-pink-600">Services</span></h2>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+          We offer a comprehensive range of beauty services to help you look and feel your best.
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Service 1 -->
+        <div class="service-card bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
+          <div class="p-8">
+            <div class="service-icon w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mb-6 transition duration-300">
+              <i class="fas fa-cut text-2xl text-pink-600"></i>
+            </div>
+            <h3 class="text-2xl font-bold mb-3">Hair Styling</h3>
+            <p class="text-gray-600 mb-4">
+              From precision cuts to creative coloring, our stylists create looks that complement your features and lifestyle.
+            </p>
+            <ul class="space-y-2 mb-6">
+              <li class="flex items-center">
+                <i class="fas fa-check text-pink-500 mr-2"></i>
+                <span>Custom haircuts</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-check text-pink-500 mr-2"></i>
+                <span>Balayage & highlights</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-check text-pink-500 mr-2"></i>
+                <span>Keratin treatments</span>
+              </li>
+            </ul>
+            <a href="#" class="text-pink-600 font-medium inline-flex items-center">
+              Learn more <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Service 2 -->
+        <div class="service-card bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
+          <div class="p-8">
+            <div class="service-icon w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mb-6 transition duration-300">
+              <i class="fas fa-spa text-2xl text-pink-600"></i>
+            </div>
+            <h3 class="text-2xl font-bold mb-3">Skin Care</h3>
+            <p class="text-gray-600 mb-4">
+              Rejuvenate your skin with our professional facials and treatments tailored to your skin type and concerns.
+            </p>
+            <ul class="space-y-2 mb-6">
+              <li class="flex items-center">
+                <i class="fas fa-check text-pink-500 mr-2"></i>
+                <span>Custom facials</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-check text-pink-500 mr-2"></i>
+                <span>Chemical peels</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-check text-pink-500 mr-2"></i>
+                <span>Microdermabrasion</span>
+              </li>
+            </ul>
+            <a href="#" class="text-pink-600 font-medium inline-flex items-center">
+              Learn more <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Service 3 -->
+        <div class="service-card bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
+          <div class="p-8">
+            <div class="service-icon w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mb-6 transition duration-300">
+              <i class="fas fa-paint-brush text-2xl text-pink-600"></i>
+            </div>
+            <h3 class="text-2xl font-bold mb-3">Makeup Artistry</h3>
+            <p class="text-gray-600 mb-4">
+              Whether it's for your wedding, a special event, or just because, our makeup artists will enhance your natural beauty.
+            </p>
+            <ul class="space-y-2 mb-6">
+              <li class="flex items-center">
+                <i class="fas fa-check text-pink-500 mr-2"></i>
+                <span>Bridal makeup</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-check text-pink-500 mr-2"></i>
+                <span>Editorial looks</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fas fa-check text-pink-500 mr-2"></i>
+                <span>Makeup lessons</span>
+              </li>
+            </ul>
+            <a href="#" class="text-pink-600 font-medium inline-flex items-center">
+              Learn more <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-12">
+        <a href="#" class="inline-flex items-center text-pink-600 font-medium text-lg">
+          View all services <i class="fas fa-arrow-right ml-2"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="py-20 bg-gray-50">
+    <div class="container mx-auto px-6">
+      <div class="flex flex-col md:flex-row items-center">
+        <div class="md:w-1/2 mb-12 md:mb-0 md:pr-12">
+          <h2 class="text-4xl font-serif font-bold mb-6">Our <span class="text-pink-600">Story</span></h2>
+          <p class="text-gray-600 mb-6 text-lg">
+            Founded in 2015, KRP Salon began as a small boutique studio with a vision to redefine beauty standards. Today, we've grown into a premier destination for those seeking exceptional service in a welcoming environment.
+          </p>
+          <p class="text-gray-600 mb-8 text-lg">
+            Our team of certified professionals undergoes continuous training to stay at the forefront of industry trends and techniques. We're committed to using only the highest quality, cruelty-free products.
+          </p>
+          <div class="flex space-x-4">
+            <div class="bg-pink-100 p-4 rounded-lg">
+              <i class="fas fa-leaf text-pink-600 text-2xl mb-2"></i>
+              <h4 class="font-bold">Eco-Friendly</h4>
+              <p class="text-sm text-gray-600">Sustainable practices</p>
+            </div>
+            <div class="bg-pink-100 p-4 rounded-lg">
+              <i class="fas fa-certificate text-pink-600 text-2xl mb-2"></i>
+              <h4 class="font-bold">Certified</h4>
+              <p class="text-sm text-gray-600">Expert professionals</p>
+            </div>
+            <div class="bg-pink-100 p-4 rounded-lg">
+              <i class="fas fa-heart text-pink-600 text-2xl mb-2"></i>
+              <h4 class="font-bold">Passionate</h4>
+              <p class="text-sm text-gray-600">About your beauty</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="md:w-1/2 relative">
+          <div class="bg-white p-8 rounded-2xl shadow-lg">
+            <h3 class="text-2xl font-bold mb-6">Why Choose Us?</h3>
+            <div class="space-y-6">
+              <div class="flex">
+                <div class="mr-4">
+                  <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-user-tie text-pink-600"></i>
+                  </div>
+                </div>
+                <div>
+                  <h4 class="font-bold mb-2">Expert Stylists</h4>
+                  <p class="text-gray-600">
+                    Our team consists of award-winning stylists with years of experience and ongoing education.
+                  </p>
+                </div>
+              </div>
+              
+              <div class="flex">
+                <div class="mr-4">
+                  <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-seedling text-pink-600"></i>
+                  </div>
+                </div>
+                <div>
+                  <h4 class="font-bold mb-2">Clean Beauty</h4>
+                  <p class="text-gray-600">
+                    We prioritize non-toxic, vegan, and cruelty-free products that deliver exceptional results.
+                  </p>
+                </div>
+              </div>
+              
+              <div class="flex">
+                <div class="mr-4">
+                  <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-star text-pink-600"></i>
+                  </div>
+                </div>
+                <div>
+                  <h4 class="font-bold mb-2">Personalized Approach</h4>
+                  <p class="text-gray-600">
+                    Every service begins with a consultation to understand your unique needs and preferences.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="absolute -z-10 -top-6 -right-6 w-full h-full rounded-2xl bg-pink-100"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery Section -->
+  <section id="gallery" class="py-20 bg-white">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-serif font-bold mb-4">Our <span class="text-pink-600">Work</span></h2>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+          Explore some of our recent transformations and beauty creations.
+        </p>
+      </div>
+      
+      <div class="splide" aria-label="Our Work Gallery">
+        <div class="splide__track">
+          <ul class="splide__list">
+            <li class="splide__slide">
+              <div class="bg-gradient-to-br from-pink-100 to-purple-100 h-96 rounded-2xl flex items-center justify-center">
+                <div class="text-center p-8">
+                  <i class="fas fa-cut text-6xl text-pink-600 mb-4"></i>
+                  <h3 class="text-2xl font-bold">Hair Transformations</h3>
+                  <p class="text-gray-600 mt-2">Before & After</p>
+                </div>
+              </div>
+            </li>
+            <li class="splide__slide">
+              <div class="bg-gradient-to-br from-yellow-100 to-pink-100 h-96 rounded-2xl flex items-center justify-center">
+                <div class="text-center p-8">
+                  <i class="fas fa-paint-brush text-6xl text-pink-600 mb-4"></i>
+                  <h3 class="text-2xl font-bold">Makeup Artistry</h3>
+                  <p class="text-gray-600 mt-2">Special Occasions</p>
+                </div>
+              </div>
+            </li>
+            <li class="splide__slide">
+              <div class="bg-gradient-to-br from-blue-100 to-purple-100 h-96 rounded-2xl flex items-center justify-center">
+                <div class="text-center p-8">
+                  <i class="fas fa-spa text-6xl text-pink-600 mb-4"></i>
+                  <h3 class="text-2xl font-bold">Skin Treatments</h3>
+                  <p class="text-gray-600 mt-2">Rejuvenation</p>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section id="testimonials" class="py-20 bg-gray-50">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-serif font-bold mb-4">Client <span class="text-pink-600">Testimonials</span></h2>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+          Don't just take our word for it. Here's what our clients say about us.
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Testimonial 1 -->
+        <div class="bg-white p-8 rounded-2xl shadow-lg">
+          <div class="flex items-center mb-4">
+            <div class="flex items-center mr-4">
+              <i class="fas fa-star text-yellow-400"></i>
+              <i class="fas fa-star text-yellow-400"></i>
+              <i class="fas fa-star text-yellow-400"></i>
+              <i class="fas fa-star text-yellow-400"></i>
+              <i class="fas fa-star text-yellow-400"></i>
+            </div>
+            <span class="text-sm text-gray-500">2 weeks ago</span>
+          </div>
+          <p class="text-gray-600 mb-6 italic">
+            "I've been to many salons, but KRP is truly special. They listened to what I wanted and delivered beyond my expectations. My hair has never looked better!"
+          </p>
+          <div class="flex items-center">
+            <div class="w-12 h-12 rounded-full bg-pink-200 mr-4"></div>
+            <div>
+              <h4 class="font-bold">Nadeesha R.</h4>
+              <p class="text-sm text-gray-500">Hair Coloring</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Testimonial 2 -->
+        <div class="bg-white p-8 rounded-2xl shadow-lg">
+          <div class="flex items-center mb-4">
+            <div class="flex items-center mr-4">
+              <i class="fas fa-star text-yellow-400"></i>
+              <i class="fas fa-star text-yellow-400"></i>
+              <i class="fas fa-star text-yellow-400"></i>
+              <i class="fas fa-star text-yellow-400"></i>
+              <i class="fas fa-star text-yellow-400"></i>
+            </div>
+            <span class="text-sm text-gray-500">1 month ago</span>
+          </div>
+          <p class="text-gray-600 mb-6 italic">
+            "The team at KRP styled me for my wedding and I couldn't have been happier. They made me feel like a princess and my makeup lasted all night!"
+          </p>
+          <div class="flex items-center">
+            <div class="w-12 h-12 rounded-full bg-purple-200 mr-4"></div>
+            <div>
+              <h4 class="font-bold">Dilani M.</h4>
+              <p class="text-sm text-gray-500">Bridal Package</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Testimonial 3 -->
+        <div class="bg-white p-8 rounded-2xl shadow-lg">
+          <div class="flex items-center mb-4">
+            <div class="flex items-center mr-4">
+              <i class="fas fa-star text-yellow-400"></i>
+              <i class="fas fa-star text-yellow-400"></i>
+              <i class="fas fa-star text-yellow-400"></i>
+              <i class="fas fa-star text-yellow-400"></i>
+              <i class="fas fa-star text-yellow-400"></i>
+            </div>
+            <span class="text-sm text-gray-500">3 days ago</span>
+          </div>
+          <p class="text-gray-600 mb-6 italic">
+            "After struggling with acne for years, the facial treatments at KRP have transformed my skin. The estheticians are knowledgeable and gentle."
+          </p>
+          <div class="flex items-center">
+            <div class="w-12 h-12 rounded-full bg-yellow-200 mr-4"></div>
+            <div>
+              <h4 class="font-bold">Priyanka S.</h4>
+              <p class="text-sm text-gray-500">Skin Care</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Booking Section -->
+  <section id="booking" class="py-20 bg-pink-600 text-white">
+    <div class="container mx-auto px-6">
+      <div class="flex flex-col md:flex-row items-center">
+        <div class="md:w-1/2 mb-12 md:mb-0 md:pr-12">
+          <h2 class="text-4xl font-serif font-bold mb-6">Ready for Your <span class="text-pink-200">Transformation</span>?</h2>
+          <p class="text-lg mb-8 opacity-90">
+            Book your appointment today and experience the KRP difference. Our team is ready to welcome you and create a look that makes you feel confident and beautiful.
+          </p>
+          <div class="space-y-4">
+            <div class="flex items-center">
+              <i class="fas fa-phone-alt mr-4 text-xl"></i>
+              <div>
+                <p class="font-medium">Call us</p>
+                <p class="text-pink-200">+94 76 123 4567</p>
+              </div>
+            </div>
+            <div class="flex items-center">
+              <i class="fas fa-envelope mr-4 text-xl"></i>
+              <div>
+                <p class="font-medium">Email us</p>
+                <p class="text-pink-200">hello@krpsalon.com</p>
+              </div>
+            </div>
+            <div class="flex items-center">
+              <i class="fas fa-map-marker-alt mr-4 text-xl"></i>
+              <div>
+                <p class="font-medium">Visit us</p>
+                <p class="text-pink-200">123 Beauty Street, Colombo 03</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="md:w-1/2">
+          <div class="bg-white rounded-2xl shadow-xl p-8 text-gray-800">
+            <h3 class="text-2xl font-bold mb-6">Book an Appointment</h3>
+            <form id="bookingForm" class="space-y-4">
+              <div>
+                <label for="name" class="block mb-1 font-medium">Full Name</label>
+                <input type="text" id="name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent">
+              </div>
+              
+              <div>
+                <label for="email" class="block mb-1 font-medium">Email</label>
+                <input type="email" id="email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent">
+              </div>
+              
+              <div>
+                <label for="phone" class="block mb-1 font-medium">Phone</label>
+                <input type="tel" id="phone" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent">
+              </div>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label for="service" class="block mb-1 font-medium">Service</label>
+                  <select id="service" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent">
+                    <option value="">Select a service</option>
+                    <option value="haircut">Haircut</option>
+                    <option value="coloring">Coloring</option>
+                    <option value="facial">Facial</option>
+                    <option value="makeup">Makeup</option>
+                    <option value="bridal">Bridal Package</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label for="date" class="block mb-1 font-medium">Preferred Date</label>
+                  <input type="date" id="date" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent">
+                </div>
+              </div>
+              
+              <div>
+                <label for="message" class="block mb-1 font-medium">Special Requests</label>
+                <textarea id="message" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"></textarea>
+              </div>
+              
+              <button type="submit" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-medium transition">
+                Book Now
+              </button>
+            </form>
+            <div id="bookingResponse" class="mt-4 text-center font-medium"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="py-20 bg-white">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-serif font-bold mb-4">Get in <span class="text-pink-600">Touch</span></h2>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+          Have questions? We'd love to hear from you.
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-gray-50 p-8 rounded-2xl shadow-sm">
+          <div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mb-6">
+            <i class="fas fa-map-marker-alt text-pink-600 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Location</h3>
+          <p class="text-gray-600">123 Beauty Street<br>Colombo 03<br>Sri Lanka</p>
+        </div>
+        
+        <div class="bg-gray-50 p-8 rounded-2xl shadow-sm">
+          <div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mb-6">
+            <i class="fas fa-clock text-pink-600 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Hours</h3>
+          <p class="text-gray-600">
+            Mon-Fri: 9AM - 7PM<br>
+            Sat: 9AM - 5PM<br>
+            Sun: Closed
+          </p>
+        </div>
+        
+        <div class="bg-gray-50 p-8 rounded-2xl shadow-sm">
+          <div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mb-6">
+            <i class="fas fa-envelope text-pink-600 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Contact</h3>
+          <p class="text-gray-600">
+            hello@krpsalon.com<br>
+            +94 76 123 4567<br>
+            @krpsalon
+          </p>
+        </div>
+      </div>
+      
+      <div class="mt-16 bg-gray-50 rounded-2xl shadow-sm p-8">
+        <h3 class="text-2xl font-bold mb-6 text-center">Send Us a Message</h3>
+        <form id="contactForm" class="max-w-2xl mx-auto space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="contactName" class="block mb-1 font-medium">Name</label>
+              <input type="text" id="contactName" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent">
+            </div>
+            
+            <div>
+              <label for="contactEmail" class="block mb-1 font-medium">Email</label>
+              <input type="email" id="contactEmail" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent">
+            </div>
+          </div>
+          
+          <div>
+            <label for="contactSubject" class="block mb-1 font-medium">Subject</label>
+            <input type="text" id="contactSubject" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent">
+          </div>
+          
+          <div>
+            <label for="contactMessage" class="block mb-1 font-medium">Message</label>
+            <textarea id="contactMessage" rows="4" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"></textarea>
+          </div>
+          
+          <button type="submit" class="w-full md:w-auto bg-pink-600 hover:bg-pink-700 text-white px-8 py-3 rounded-lg font-medium transition">
+            Send Message
+          </button>
+        </form>
+        <div id="contactResponse" class="mt-4 text-center font-medium"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter Section -->
+  <section class="py-16 bg-gradient-to-r from-pink-500 to-purple-500 text-white">
+    <div class="container mx-auto px-6 text-center">
+      <h2 class="text-3xl font-serif font-bold mb-4">Join Our Beauty Community</h2>
+      <p class="text-xl mb-8 max-w-2xl mx-auto opacity-90">
+        Subscribe to receive exclusive offers, beauty tips, and updates from KRP Salon.
+      </p>
+      
+      <form id="newsletterForm" class="max-w-md mx-auto flex">
+        <input type="email" placeholder="Your email address" required class="flex-grow px-4 py-3 rounded-l-lg focus:outline-none text-gray-800">
+        <button type="submit" class="bg-pink-800 hover:bg-pink-900 px-6 py-3 rounded-r-lg font-medium transition">
+          Subscribe
+        </button>
+      </form>
+      <div id="newsletterResponse" class="mt-4 font-medium"></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white py-12">
+    <div class="container mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <h3 class="text-2xl font-serif font-bold mb-4">KRP Salon</h3>
+          <p class="text-gray-400">
+            Where confidence meets elegance. Our salon is dedicated to enhancing your natural beauty through expert care and premium products.
+          </p>
+        </div>
+        
+        <div>
+          <h4 class="text-lg font-bold mb-4">Quick Links</h4>
+          <ul class="space-y-2">
+            <li><a href="#home" class="text-gray-400 hover:text-white transition">Home</a></li>
+            <li><a href="#services" class="text-gray-400 hover:text-white transition">Services</a></li>
+            <li><a href="#about" class="text-gray-400 hover:text-white transition">About Us</a></li>
+            <li><a href="#gallery" class="text-gray-400 hover:text-white transition">Gallery</a></li>
+            <li><a href="#contact" class="text-gray-400 hover:text-white transition">Contact</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="text-lg font-bold mb-4">Services</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-400 hover:text-white transition">Hair Styling</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition">Hair Coloring</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition">Skin Treatments</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition">Makeup Artistry</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition">Bridal Packages</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="text-lg font-bold mb-4">Connect</h4>
+          <div class="flex space-x-4 mb-4">
+            <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-pink-600 transition">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-pink-600 transition">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-pink-600 transition">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-pink-600 transition">
+              <i class="fab fa-pinterest-p"></i>
+            </a>
+          </div>
+          <p class="text-gray-400">
+            Follow us for beauty tips, special offers, and behind-the-scenes looks at our salon.
+          </p>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <p class="text-gray-400 text-sm mb-4 md:mb-0">
+          &copy; 2025 KRP Salon. All rights reserved.
+        </p>
+        <div class="flex space-x-6">
+          <a href="#" class="text-gray-400 hover:text-white text-sm transition">Privacy Policy</a>
+          <a href="#" class="text-gray-400 hover:text-white text-sm transition">Terms of Service</a>
+          <a href="#" class="text-gray-400 hover:text-white text-sm transition">Sitemap</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Back to Top Button -->
+  <button id="backToTop" class="fixed bottom-8 right-8 w-12 h-12 bg-pink-600 text-white rounded-full shadow-lg flex items-center justify-center opacity-0 invisible transition-all duration-300">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <script>
+    // Mobile Menu Toggle
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    mobileMenuButton.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+    
+    // Smooth Scrolling for Anchor Links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          window.scrollTo({
+            top: targetElement.offsetTop - 80,
+            behavior: 'smooth'
+          });
+          
+          // Close mobile menu if open
+          mobileMenu.classList.add('hidden');
+        }
+      });
+    });
+    
+    // Back to Top Button
+    const backToTopButton = document.getElementById('backToTop');
+    
+    window.addEventListener('scroll', () => {
+      if (window.pageYOffset > 300) {
+        backToTopButton.classList.remove('opacity-0', 'invisible');
+        backToTopButton.classList.add('opacity-100', 'visible');
+      } else {
+        backToTopButton.classList.remove('opacity-100', 'visible');
+        backToTopButton.classList.add('opacity-0', 'invisible');
+      }
+    });
+    
+    backToTopButton.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+    
+    // Form Submissions
+    document.getElementById('bookingForm')?.addEventListener('submit', function(e) {
+      e.preventDefault();
+      document.getElementById('bookingResponse').textContent = "Thank you! We'll contact you shortly to confirm your appointment.";
+      this.reset();
+    });
+    
+    document.getElementById('contactForm')?.addEventListener('submit', function(e) {
+      e.preventDefault();
+      document.getElementById('contactResponse').textContent = "Thank you for your message! We'll get back to you soon.";
+      this.reset();
+    });
+    
+    document.getElementById('newsletterForm')?.addEventListener('submit', function(e) {
+      e.preventDefault();
+      document.getElementById('newsletterResponse').textContent = "Thanks for subscribing! Check your email for confirmation.";
+      this.reset();
+    });
+    
+    // Counter Animation
+    function animateCounter(id, target, duration = 2000) {
+      const element = document.getElementById(id);
+      const start = 0;
+      const increment = target / (duration / 16);
+      let current = start;
+      
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+          clearInterval(timer);
+          current = target;
+        }
+        element.textContent = Math.floor(current);
+      }, 16);
+    }
+    
+    // Initialize counters when they come into view
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateCounter('clients-count', 850);
+          animateCounter('services-count', 15);
+          animateCounter('stylists-count', 8);
+          animateCounter('years-count', 10);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    
+    const statsSection = document.querySelector('.bg-gradient-to-r');
+    if (statsSection) {
+      observer.observe(statsSection);
+    }
+    
+    // Initialize Splide Gallery
+    new Splide('.splide', {
+      type: 'loop',
+      perPage: 1,
+      perMove: 1,
+      gap: '2rem',
+      autoplay: true,
+      interval: 4000,
+      pauseOnHover: true,
+      breakpoints: {
+        768: {
+          perPage: 1
+        }
+      }
+    }).mount();
+    
+    // Three.js Background
+    const threeJsBg = document.getElementById('threejs-bg');
+    if (threeJsBg) {
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      threeJsBg.appendChild(renderer.domElement);
+      
+      // Create floating particles
+      const particlesGeometry = new THREE.BufferGeometry();
+      const particleCount = 500;
+      
+      const posArray = new Float32Array(particleCount * 3);
+      for(let i = 0; i < particleCount * 3; i++) {
+        posArray[i] = (Math.random() - 0.5) * 10;
+      }
+      
+      particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+      
+      const particlesMaterial = new THREE.PointsMaterial({
+        size: 0.02,
+        color: 0xec4899,
+        transparent: true,
+        opacity: 0.8
+      });
+      
+      const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+      scene.add(particlesMesh);
+      
+      camera.position.z = 3;
+      
+      function animate() {
+        requestAnimationFrame(animate);
+        
+        particlesMesh.rotation.x += 0.0005;
+        particlesMesh.rotation.y += 0.0005;
+        
+        renderer.render(scene, camera);
+      }
+      
+      animate();
+      
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+    }
+    
+    // p5.js Hair Animation
+    const hairCanvas = document.getElementById('hairCanvas');
+    if (hairCanvas) {
+      new p5((p) => {
+        let hairs = [];
+        const hairCount = 100;
+        
+        p.setup = () => {
+          p.createCanvas(window.innerWidth, window.innerHeight);
+          
+          for (let i = 0; i < hairCount; i++) {
+            hairs.push({
+              x: p.random(p.width),
+              y: p.random(p.height),
+              length: p.random(50, 150),
+              thickness: p.random(0.5, 2),
+              speed: p.random(0.5, 2),
+              angle: p.random(p.TWO_PI),
+              color: p.color(236, 72, 153, p.random(30, 70))
+            });
+          }
+        };
+        
+        p.draw = () => {
+          p.clear();
+          
+          hairs.forEach(hair => {
+            // Update position with slight movement
+            hair.angle += p.random(-0.05, 0.05);
+            const moveX = p.cos(hair.angle) * hair.speed;
+            const moveY = p.sin(hair.angle) * hair.speed;
+            
+            hair.x += moveX;
+            hair.y += moveY;
+            
+            // Wrap around edges
+            if (hair.x < 0) hair.x = p.width;
+            if (hair.x > p.width) hair.x = 0;
+            if (hair.y < 0) hair.y = p.height;
+            if (hair.y > p.height) hair.y = 0;
+            
+            // Draw hair strand
+            p.stroke(hair.color);
+            p.strokeWeight(hair.thickness);
+            p.noFill();
+            
+            p.beginShape();
+            for (let i = 0; i < hair.length; i++) {
+              const segmentX = hair.x + p.cos(hair.angle + i * 0.1) * i * 0.5;
+              const segmentY = hair.y + p.sin(hair.angle + i * 0.1) * i * 0.5;
+              p.curveVertex(segmentX, segmentY);
+            }
+            p.endShape();
+          });
+        };
+        
+        p.windowResized = () => {
+          p.resizeCanvas(window.innerWidth, window.innerHeight);
+        };
+      }, hairCanvas);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+/* ===== FILE: style.css (CSS) ===== */
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #fff8f0;
+    color: #333;
+  }
+  
+  header {
+    background-color: #f06c9b;
+    color: white;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  nav a {
+    color: white;
+    margin: 0 15px;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  main {
+    padding: 20px;
+  }
+  
+  footer {
+    text-align: center;
+    padding: 15px;
+    background-color: #f06c9b;
+    color: white;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+  }
+  
+  form input, form textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+  }
+  
+  button {
+    background-color: #f06c9b;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+  }
